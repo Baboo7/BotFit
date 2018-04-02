@@ -1,0 +1,32 @@
+{
+  "name": "mongodb-test",
+  "version": "1.0.0",
+  "description": "A test with mongodb database",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "./node_modules/.bin/mocha --recursive"
+  },
+  "author": "Baboo",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "axios-cookiejar-support": "^0.3.4",
+    "body-parser": "^1.17.2",
+    "express": "^4.15.4",
+    "request": "^2.85.0",
+    "request-promise-native": "^1.0.5",
+    "winston": "^2.4.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "eslint": "^4.13.1",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "mocha": "^3.5.3",
+    "node-mocks-http": "^1.5.8"
+  }
+}

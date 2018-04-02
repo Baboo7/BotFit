@@ -1,0 +1,10 @@
+{
+	"extends": "standard",
+  "globals": {
+    "describe": true,
+    "it": true
+  },
+	"rules": {
+		"no-mixed-spaces-and-tabs": ["error", "smart-tabs"]
+	}
+}
