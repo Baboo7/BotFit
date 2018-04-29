@@ -13,6 +13,7 @@
     "axios": "^0.17.1",
     "axios-cookiejar-support": "^0.3.4",
     "body-parser": "^1.17.2",
+    "cheerio": "^1.0.0-rc.2",
     "express": "^4.15.4",
     "request": "^2.85.0",
     "request-promise-native": "^1.0.5",
