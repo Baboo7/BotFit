@@ -1,12 +1,11 @@
 'use strict'
 
-const http = require('http')
-const qs = require('qs')
 const axios = require('axios')
 const logger = require('../../logger')
 const nt = require('../../utils/nativeTypes')
+const login = require('../../utils/multiresa')
 
-/* Book a slot.
+/* Unbook a slot.
 
   PARAM
   interaction: (object) see Interaction class
@@ -23,40 +22,10 @@ const handler = interaction => {
   return new Promise((resolve, reject) => {
     let date = interaction.getParameter('date')
     let time = interaction.getParameter('time')
-    new Promise((resolve, reject) => {
-      // Dont use axios for this specific request because it smells like shit
-      // It is impossible to set 'Content-Type': 'application/x-www-form-urlencoded'
-      // If so, data has to be parsed otherwise request turns from POST to GET
-      let body = qs.stringify({
-        username: 'baboo',
-        passwd: 'botfit',
-        op2: 'login',
-        cbsecuritym3: 'cbm_23323ff8_1cc69acf_59c0cf3f3fde9c050e826888c4b2233f'
-      })
 
-      let options = {
-        host: 'www.multiresa.fr',
-        path: '/~reebok2/index.php/creation-de-compte/login.html',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Content-Length': Buffer.byteLength(body),
-          'User-Agent': 'Baboo Agent'
-        }
-      }
-
-      let req = http.request(options, res => {
-        res.on('data', () => { })
-        res.on('end', () => { resolve(res) })
-      })
-
-      req.on('error', e => { reject(e) })
-
-      req.write(body)
-      req.end()
-    })
-      .then(res => {
-        const cookie = res.headers['set-cookie'][1].split(';')[0]
+    login
+      .getLoggedinCookie()
+      .then(cookie => {
         return axios({
           url: 'http://www.multiresa.fr/~reebok2/app/req/requestResa.php',
           method: 'get',
