@@ -2,7 +2,6 @@
 
 const defaultConf = {
   APP: 'BotFit',
-  LOG_FILE: './logs/botfit-core.log',
   PORT: 8080,
   NODE_ENV: 'dev',
   USERNAME: 'baboo',
