@@ -2,6 +2,7 @@
 
 const axios = require('axios')
 const logger = require('../../logger')
+const multiresa = require('../../utils/multiresa')
 
 /* Get the available slots.
 
@@ -24,22 +25,28 @@ const handler = interaction => {
 
         let items = []
         slots
-          .filter(slot => slot.ladate === date && parseInt(slot.capacite) - parseInt(slot.nbresa) !== 0)
+          .filter(slot => slot.ladate === date && multiresa.slotRemainingPlaces(slot) !== 0)
           .sort((a, b) => a.horaireD >= b.horaireD ? 1 : -1)
           .forEach(slot => {
-            if (slot.ladispo === 'Ru00e9servu00e9') {
+            if (multiresa.isSlotBooked(slot)) {
               items.push(interaction.createListItem({
                 title: `${slot.horaireD} - ${slot.horaireF}`,
                 subtitle: `Inscrit`,
                 img: 'https://s2.qwant.com/thumbr/0x0/d/c/77ad88824d008dd938393d3d49f17d/b_1_q_0_p_0.jpg?u=https%3A%2F%2Fwww.brandworkz.com%2Fwp-content%2Fuploads%2F2016%2F08%2FReebok-logo.jpg',
-                buttons: [{ type: 'postback', payload: `unbook ${date} ${slot.horaireD.replace(':', '')}`, 'title': '❎ Se désinscrire' }]
+                buttons: [{
+                  type: 'postback',
+                  payload: `unbook ${date} ${slot.horaireD.replace(':', '')}`,
+                  title: '❎ Se désinscrire' }]
               }))
             } else {
               items.push(interaction.createListItem({
                 title: `${slot.horaireD} - ${slot.horaireF}`,
-                subtitle: `${parseInt(slot.capacite) - parseInt(slot.nbresa)} places restantes`,
+                subtitle: `${multiresa.slotRemainingPlaces(slot)} places restantes`,
                 img: 'https://s2.qwant.com/thumbr/0x0/d/c/77ad88824d008dd938393d3d49f17d/b_1_q_0_p_0.jpg?u=https%3A%2F%2Fwww.brandworkz.com%2Fwp-content%2Fuploads%2F2016%2F08%2FReebok-logo.jpg',
-                buttons: [{ type: 'postback', payload: `book ${date} ${slot.horaireD.replace(':', '')}`, 'title': `✅ S'inscrire` }]
+                buttons: [{
+                  type: 'postback',
+                  payload: `book ${date} ${slot.horaireD.replace(':', '')}`,
+                  title: `✅ S'inscrire` }]
               }))
             }
           })

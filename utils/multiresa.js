@@ -61,6 +61,90 @@ const getLoggedinCookie = () => {
     })
 }
 
+const slotActions = {
+  BOOK: 'sendresa',
+  UNBOOK: 'cancelresa'
+}
+
+/* Manage slot booking / unbooking.
+
+  PARAM
+    (object)
+      cookie: (string)
+      action: (string) see slotActions
+      date: (string)
+      time: (string)
+
+  RETURN
+    (Promise)
+*/
+const manageSlot = ({cookie, action, date, time}) => {
+  return axios({
+    url: 'http://www.multiresa.fr/~reebok2/app/req/requestResa.php',
+    method: 'get',
+    params: {
+      action: action,
+      idcompte: 884,
+      idMembre: 13230,
+      mailMembre: 'baptiste.studer@laposte.net',
+      activite: 43,
+      lejour: date,
+      lecreno: time,
+      effectif: 25
+    },
+    headers: {
+      'Cookie': cookie,
+      'Host': 'www.multiresa.fr',
+      'Accept': '*/*',
+      'Accept-Encoding': 'gzip, deflate',
+      'Cache-Control': 'no-cache'
+    }
+  })
+}
+
+/* Manage slot booking / unbooking.
+
+  PARAM
+    response: (string) http response from multiresa to parse
+
+  RETURN
+
+*/
+const parseData = data => {
+  return JSON.parse(data.replace(/(\(|\)|\\|;)/g, ''))
+}
+
+/* Indicate whether a slot is booked.
+
+  PARAM
+    slot: (object)
+
+  RETURN
+    (boolean) true if booked, false otherwise
+
+*/
+const isSlotBooked = slot => {
+  return slot.ladispo === 'Ru00e9servu00e9'
+}
+
+/* Indicate the number of places left for a slot.
+
+  PARAM
+    slot: (object)
+
+  RETURN
+    (number)
+
+*/
+const slotRemainingPlaces = slot => {
+  return parseInt(slot.capacite) - parseInt(slot.nbresa)
+}
+
 module.exports = {
-  getLoggedinCookie
+  getLoggedinCookie,
+  manageSlot,
+  slotActions,
+  parseData,
+  isSlotBooked,
+  slotRemainingPlaces
 }

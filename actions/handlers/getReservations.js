@@ -2,6 +2,7 @@
 
 const axios = require('axios')
 const logger = require('../../logger')
+const multiresa = require('../../utils/multiresa')
 
 /* Get the reservations.
 
@@ -16,12 +17,11 @@ const handler = interaction => {
     axios
       .get(`http://www.multiresa.fr/~reebok2/app/req/reloadResa.php?idcompte=884&idMembre=13230&mailMembre=baptiste.studer@laposte.net&activite=43&zedate=${new Date().toJSON().substring(0, 10)}&typecreno=1`)
       .then(res => {
-        res.data = res.data.replace(/(\(|\)|\\|;)/g, '')
-        let slots = JSON.parse(res.data)
+        let slots = multiresa.parseData(res.data)
 
         let items = []
         slots
-          .filter(slot => slot.ladispo === 'Ru00e9servu00e9')
+          .filter(slot => multiresa.isSlotBooked(slot))
           .sort((a, b) => a.lejour > b.lejour || (a.lejour === b.lejour && a.horaireD >= b.horaireD) ? 1 : -1)
           .forEach(slot => {
             let date = new Date(slot.ladate)
@@ -33,7 +33,10 @@ const handler = interaction => {
               title: `${day} ${slot.lejour.substring(0, 2)} à ${slot.horaireD}`,
               subtitle,
               img: 'https://s2.qwant.com/thumbr/0x0/d/c/77ad88824d008dd938393d3d49f17d/b_1_q_0_p_0.jpg?u=https%3A%2F%2Fwww.brandworkz.com%2Fwp-content%2Fuploads%2F2016%2F08%2FReebok-logo.jpg',
-              buttons: [{ type: 'postback', payload: `unbook ${date.toJSON().substring(0, 10)} ${slot.horaireD.replace(':', '')}`, 'title': 'Se désinscrire' }]
+              buttons: [{
+                type: 'postback',
+                payload: `unbook ${date.toJSON().substring(0, 10)} ${slot.horaireD.replace(':', '')}`,
+                title: 'Se désinscrire' }]
             }))
           })
 
