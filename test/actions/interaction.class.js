@@ -25,18 +25,15 @@ describe('interaction class', () => {
       let text = 'some text'
 
       let expected = {
+        platform: 'facebook',
         type: 0,
         speech: text
       }
 
       let interaction = new Interaction({ })
 
-      try {
-        let message = interaction.createTextMessage(text)
-        expect(message).to.deep.equal(expected)
-      } catch (e) {
-        expect({ }).to.deep.equal(expected)
-      }
+      let message = interaction.createTextMessage(text)
+      expect(message).to.deep.equal(expected)
     })
   })
 })
