@@ -1,6 +1,7 @@
 'use strict'
 
 const logger = require('../logger')
+const nt = require('../utils/nativeTypes')
 const actionHandler = require('../actions')
 const Interaction = require('../actions/interaction.class')
 
@@ -30,19 +31,14 @@ const webhook = (req, res) => {
 
   let interaction = new Interaction(options)
 
-  try {
-    actionHandler(interaction)
-      .then(() => {
-        res.json(interaction.getResponse())
-      })
-      .catch(e => {
-        logger.log('error', e)
-        res.json(interaction.getResponse())
-      })
-  } catch (e) {
-    logger.log('error', e)
-    res.json(interaction.getResponse())
-  }
+  actionHandler(interaction)
+    .then(() => {
+      res.json(interaction.getResponse())
+    })
+    .catch(e => {
+      logger.log('error', e)
+      res.json(interaction.getResponse())
+    })
 }
 
 module.exports = webhook
