@@ -31,12 +31,12 @@ const isUndefined = param => {
   RETURN:
     (boolean) true if defined / false otherwise
 */
-const IsPropDefined = (obj, prop) => {
+const isPropDefined = (obj, prop) => {
   let keys = Array.isArray(prop) ? prop : prop.split('.')
   if (keys.length === 0) return true
 
   if (!isUndefined(obj[keys[0]])) {
-    return IsPropDefined(obj[keys[0]], keys.slice(1))
+    return isPropDefined(obj[keys[0]], keys.slice(1))
   } else {
     return false
   }
@@ -50,23 +50,37 @@ const IsPropDefined = (obj, prop) => {
   RETURN:
     (boolean) true if defined / false otherwise
 */
-const ArePropsDefined = (obj, props) => {
+const arePropsDefined = (obj, props) => {
   let keys = typeof props === 'string' ? [props] : props
   return keys.every(key => {
-    return IsPropDefined(obj, key)
+    return isPropDefined(obj, key)
   })
 }
 
-const unicodeToUTF8 = s => {
-  return s
-    .replace(/u00e9/g, 'é')
-    .replace(/u00ea/g, 'ê')
+/* Get the property of an object
+  ARGS:
+    obj: (object)
+    path: (string) path to the property to check
+
+  RETURN:
+    The prop value, undefined otherwise
+*/
+const getProp = (obj, path) => {
+  if (isUndefined(obj)) return
+
+  let pointIndex = path.indexOf('.')
+  let propName = path.substring(0, pointIndex === -1 ? path.length : pointIndex)
+  if (pointIndex === -1 && obj.hasOwnProperty(propName)) return obj[propName]
+  else {
+    let newPath = path.substring(pointIndex + 1)
+    return getProp(obj[propName], newPath)
+  }
 }
 
 module.exports = {
   isBlank,
   isUndefined,
-  IsPropDefined,
-  ArePropsDefined,
-  unicodeToUTF8
+  isPropDefined,
+  arePropsDefined,
+  getProp
 }
