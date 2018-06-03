@@ -10,6 +10,7 @@ class Interaction {
     this.parameters = Object.assign({ }, options.parameters)
     this.messages = Object.assign([ ], options.messages)
 
+    this.speech = ''
     this.followupEvent = {
       data: { }
     }
@@ -39,10 +40,23 @@ class Interaction {
     let response = {
       contextOut: this.contexts,
       followupEvent: this.followupEvent,
-      messages: this.messages
+      messages: this.messages,
+      speech: this.speech
     }
 
     return response
+  }
+
+  /* Set the speech of the agent.
+
+  PARAM
+    speech: (string)
+
+  RETURN
+    none
+  */
+  setSpeech (speech) {
+    this.speech = speech
   }
 
   /* Set the followup event.
