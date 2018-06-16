@@ -23,10 +23,6 @@ const handler = interaction => {
     multiresa
       .getAvailableSlots(date)
       .then(slots => {
-        logger.log('info', {
-          date,
-          nbSlots: slots.length
-        })
 
         let speech = ''
         slots.forEach(slot => {

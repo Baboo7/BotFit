@@ -161,8 +161,6 @@ const getAvailableSlots = (date) => {
           .filter(slot => slot.ladate === dateRef && slotRemainingPlaces(slot) !== 0)
           .sort((a, b) => a.horaireD >= b.horaireD ? 1 : -1)
 
-        require('../logger').log('info', availableSlots)
-
         resolve(availableSlots)
       })
       .catch(e => reject(e))
