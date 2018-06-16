@@ -76,13 +76,15 @@ const slotActions = {
     (object)
       cookie: (string)
       action: (string) see slotActions
-      date: (string)
-      time: (string)
+      dateTime: (object)
 
   RETURN
     (Promise)
 */
-const manageSlot = ({cookie, action, date, time}) => {
+const manageSlot = ({cookie, action, dateTime}) => {
+  let dateJSON = dateTime.toJSON()
+  let date = dateJSON.substring(0, 10)
+  let time = dateJSON.substring(11, 16).replace(':', '')
   return axios({
     url: 'http://www.multiresa.fr/~reebok2/app/req/requestResa.php',
     method: 'get',

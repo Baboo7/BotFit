@@ -77,10 +77,23 @@ const getProp = (obj, path) => {
   }
 }
 
+/* Replace unicode characters.
+  ARGS:
+    s: (string)
+
+  RETURN:
+    (string)
+*/
+const unicodeToUTF8 = (s) => {
+  return s
+    .replace(/u00e9/g, 'é')
+}
+
 module.exports = {
   isBlank,
   isUndefined,
   isPropDefined,
   arePropsDefined,
-  getProp
+  getProp,
+  unicodeToUTF8
 }
