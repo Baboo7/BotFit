@@ -17,7 +17,8 @@ const multiresa = require('../../utils/multiresa')
 */
 const handler = interaction => {
   return new Promise((resolve, reject) => {
-    let dateTime = new Date(interaction.getParameter('dateTime'))
+    let dateString = interaction.getParameter('date') + 'T' + interaction.getParameter('time') + 'Z'
+    let dateTime = new Date(dateString)
     let slotAction = interaction.getParameter('slotAction')
 
     multiresa
