@@ -5,6 +5,10 @@ const qs = require('qs')
 const axios = require('axios')
 const cheerio = require('cheerio')
 
+const getSlotsURLFromDate = date => {
+  return `http://www.multiresa.fr/~reebok2/app/req/reloadResa.php?idcompte=884&idMembre=13230&mailMembre=baptiste.studer@laposte.net&activite=43&zedate=${date.toJSON().substring(0, 10)}&typecreno=1`
+}
+
 /* Get login cookie.
 
   PARAM
@@ -102,6 +106,67 @@ const manageSlot = ({cookie, action, date, time}) => {
   })
 }
 
+/* Get the booked sessions.
+
+  RETURN
+    (Promise) Resolves with the list of booked slots ordered by date ascending.
+*/
+const getBookedSlots = () => {
+  return new Promise((resolve, reject) => {
+    let todate = new Date()
+    let nextWeekDate = new Date()
+    nextWeekDate.setDate(nextWeekDate.getDate() + 7)
+
+    Promise
+      .all([
+        axios.get(getSlotsURLFromDate(todate)),
+        axios.get(getSlotsURLFromDate(nextWeekDate))
+      ])
+      .then(([currentWeekSlots, nextWeekSlots]) => {
+        let slots = [
+          ...parseData(currentWeekSlots.data),
+          ...parseData(nextWeekSlots.data)
+        ]
+
+        let bookedSlots = slots
+          .filter(slot => isSlotBooked(slot))
+          .sort((a, b) => a.lejour > b.lejour || (a.lejour === b.lejour && a.horaireD >= b.horaireD) ? 1 : -1)
+
+        resolve(bookedSlots)
+      })
+      .catch(e => reject(e))
+  })
+}
+
+/* Get the available sessions of a day.
+
+  PARAM
+    date: (object) Date object of the day.
+
+  RETURN
+    (Promise) Resolves with the list of available slots ordered by date ascending.
+*/
+const getAvailableSlots = (date) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(getSlotsURLFromDate(date))
+      .then(daySlots => {
+        let slots = parseData(daySlots.data)
+
+        let dateRef = date.toJSON().substring(0, 10)
+
+        let availableSlots = slots
+          .filter(slot => slot.ladate === dateRef && slotRemainingPlaces(slot) !== 0)
+          .sort((a, b) => a.horaireD >= b.horaireD ? 1 : -1)
+
+        require('../logger').log('info', availableSlots)
+
+        resolve(availableSlots)
+      })
+      .catch(e => reject(e))
+  })
+}
+
 /* Manage slot booking / unbooking.
 
   PARAM
@@ -141,6 +206,8 @@ const slotRemainingPlaces = slot => {
 }
 
 module.exports = {
+  getBookedSlots,
+  getAvailableSlots,
   getLoggedinCookie,
   manageSlot,
   slotActions,

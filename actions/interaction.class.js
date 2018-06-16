@@ -3,7 +3,6 @@
 // Define a webhook interaction.
 class Interaction {
   constructor (options) {
-    this.fbid = options.fbid
     this.sessionId = options.sessionId
     this.contexts = Object.assign([ ], options.contexts)
     this.action = options.action

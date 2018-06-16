@@ -15,13 +15,18 @@ const Interaction = require('../actions/interaction.class')
     none
 */
 const webhook = (req, res) => {
-  if (!req.body.sessionId || !req.body.result || !req.body.result.contexts || !req.body.result.action || !req.body.result.parameters || !req.body.result.fulfillment || !req.body.result.fulfillment.messages || !req.body.originalRequest || !req.body.originalRequest.data || !req.body.originalRequest.data.sender || !req.body.originalRequest.data.sender.id) {
+  if (!req.body.sessionId ||
+      !req.body.result ||
+      !req.body.result.contexts ||
+      !req.body.result.action ||
+      !req.body.result.parameters ||
+      !req.body.result.fulfillment ||
+      !req.body.result.fulfillment.messages) {
     logger.log('error', 'missing parameters from body request', { request: req.body })
     return res.json({ })
   }
 
   let options = {
-    fbid: req.body.originalRequest.data.sender.id,
     sessionId: req.body.sessionId,
     contexts: req.body.result.contexts,
     action: req.body.result.action,

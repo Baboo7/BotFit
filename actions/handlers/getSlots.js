@@ -1,8 +1,10 @@
 'use strict'
 
-const axios = require('axios')
 const logger = require('../../logger')
+const nt = require('../../utils/nativeTypes')
 const multiresa = require('../../utils/multiresa')
+
+const days = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
 
 /* Get the available slots.
 
@@ -16,57 +18,27 @@ const multiresa = require('../../utils/multiresa')
 */
 const handler = interaction => {
   return new Promise((resolve, reject) => {
-    let date = interaction.getParameter('date')
-    axios
-      .get(`http://www.multiresa.fr/~reebok2/app/req/reloadResa.php?idcompte=884&idMembre=13230&mailMembre=baptiste.studer@laposte.net&activite=43&zedate=${date}&typecreno=1`)
-      .then(res => {
-        res.data = res.data.replace(/(\(|\)|\\|;)/g, '')
-        let slots = JSON.parse(res.data)
+    let date = new Date(interaction.getParameter('date'))
 
-        let items = []
-        slots
-          .filter(slot => slot.ladate === date && multiresa.slotRemainingPlaces(slot) !== 0)
-          .sort((a, b) => a.horaireD >= b.horaireD ? 1 : -1)
-          .forEach(slot => {
-            if (multiresa.isSlotBooked(slot)) {
-              items.push(interaction.createListItem({
-                title: `${slot.horaireD} - ${slot.horaireF}`,
-                subtitle: `Inscrit`,
-                img: 'https://s2.qwant.com/thumbr/0x0/d/c/77ad88824d008dd938393d3d49f17d/b_1_q_0_p_0.jpg?u=https%3A%2F%2Fwww.brandworkz.com%2Fwp-content%2Fuploads%2F2016%2F08%2FReebok-logo.jpg',
-                buttons: [{
-                  type: 'postback',
-                  payload: `unbook ${date} ${slot.horaireD.replace(':', '')}`,
-                  title: '❎ Se désinscrire' }]
-              }))
-            } else {
-              items.push(interaction.createListItem({
-                title: `${slot.horaireD} - ${slot.horaireF}`,
-                subtitle: `${multiresa.slotRemainingPlaces(slot)} places restantes`,
-                img: 'https://s2.qwant.com/thumbr/0x0/d/c/77ad88824d008dd938393d3d49f17d/b_1_q_0_p_0.jpg?u=https%3A%2F%2Fwww.brandworkz.com%2Fwp-content%2Fuploads%2F2016%2F08%2FReebok-logo.jpg',
-                buttons: [{
-                  type: 'postback',
-                  payload: `book ${date} ${slot.horaireD.replace(':', '')}`,
-                  title: `✅ S'inscrire` }]
-              }))
-            }
-          })
+    multiresa
+      .getAvailableSlots(date)
+      .then(slots => {
+        logger.log('info', {
+          date,
+          nbSlots: slots.length
+        })
 
-        if (items.length > 0) {
-          items.push(interaction.createListItem({
-            title: `Push the limits`,
-            subtitle: `Prot & Fonte, Push up Push up`,
-            img: 'https://s2.qwant.com/thumbr/0x0/d/c/77ad88824d008dd938393d3d49f17d/b_1_q_0_p_0.jpg?u=https%3A%2F%2Fwww.brandworkz.com%2Fwp-content%2Fuploads%2F2016%2F08%2FReebok-logo.jpg'
-          }))
-        }
+        let speech = ''
+        slots.forEach(slot => {
+          speech += `${slot.horaireD}, `
+        })
 
-        let messages = []
-        while (items.length !== 0) {
-          let nbItems = 4
-          if (items.length === 5) nbItems = 3
-          messages.push(interaction.createListMessage(items.slice(0, nbItems)))
-          items = items.slice(nbItems)
-        }
-        interaction.setMessages(messages)
+        if (nt.isBlank(speech)) speech = 'Toutes les sessions ont été réservées, tu te retrouves la queue entre les jambes comme un baptou fragile.'
+        else speech = `Les sessions disponibles de ${days[date.getDay()]} sont à ` + speech
+
+        interaction.setSpeech(speech)
+        let message = interaction.createTextMessage(speech)
+        interaction.setMessages([ message ])
         resolve()
       })
       .catch(e => {
