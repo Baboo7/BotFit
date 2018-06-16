@@ -30,11 +30,11 @@ const handler = interaction => {
         })
 
         if (nt.isBlank(speech)) {
-          speech = 'Aucune session de prévue pour le moment, tu ferais mieux de te mettre au sport. ' +
-            'Quand tu passes dans les couloirs les Sipionautes ils disent oh le gros sac regardez le gros sac et après ils rigolent de toi.' +
+          speech = 'Aucune session de prévue pour le moment, vous feriez mieux de vous mettre au sport. ' +
+            'Quand vous passez dans les couloirs les Sipionautes ils disent oh le gros sac regardez le gros sac et après ils rigolent de vous.' +
             speech
         }
-        else speech = `Tes réservations sont ` + speech
+        else speech = `Vos réservations sont ` + speech
 
         interaction.setSpeech(speech)
         let message = interaction.createTextMessage(speech)

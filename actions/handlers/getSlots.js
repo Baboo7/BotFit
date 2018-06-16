@@ -33,7 +33,7 @@ const handler = interaction => {
           speech += `${slot.horaireD}, `
         })
 
-        if (nt.isBlank(speech)) speech = 'Toutes les sessions ont été réservées, tu te retrouves la queue entre les jambes comme un baptou fragile.'
+        if (nt.isBlank(speech)) speech = 'Toutes les sessions ont été réservées, vous vous retrouvez la queue entre les jambes comme un baptou fragile.'
         else speech = `Les sessions disponibles de ${days[date.getDay()]} sont à ` + speech
 
         interaction.setSpeech(speech)
