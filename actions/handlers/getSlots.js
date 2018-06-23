@@ -29,12 +29,14 @@ const handler = interaction => {
           speech += `${slot.horaireD}, `
         })
 
-        if (nt.isBlank(speech)) speech = 'Toutes les sessions ont été réservées, vous vous retrouvez la queue entre les jambes comme un baptou fragile.'
-        else speech = `Les sessions disponibles de ${days[date.getDay()]} sont à ` + speech
-
-        interaction.setSpeech(speech)
-        let message = interaction.createTextMessage(speech)
-        interaction.setMessages([ message ])
+        if (nt.isBlank(speech)) {
+          interaction.setFollowupEvent('noSlot')
+        } else {
+          speech = `Les sessions disponibles de ${days[date.getDay()]} sont à ` + speech
+          interaction.setSpeech(speech)
+          let message = interaction.createTextMessage(speech)
+          interaction.setMessages([ message ])
+        }
         resolve()
       })
       .catch(e => {
