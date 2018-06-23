@@ -30,15 +30,13 @@ const handler = interaction => {
         })
 
         if (nt.isBlank(speech)) {
-          speech = 'Aucune session de prévue pour le moment, vous feriez mieux de vous mettre au sport. ' +
-            'Quand vous passez dans les couloirs les Sipionautes ils disent oh le gros sac regardez le gros sac et après ils rigolent de vous.' +
-            speech
+          interaction.setFollowupEvent('noReservation')
+        } else {
+          speech = `Vos réservations sont ` + speech
+          interaction.setSpeech(speech)
+          let message = interaction.createTextMessage(speech)
+          interaction.setMessages([ message ])
         }
-        else speech = `Vos réservations sont ` + speech
-
-        interaction.setSpeech(speech)
-        let message = interaction.createTextMessage(speech)
-        interaction.setMessages([ message ])
         resolve()
       })
       .catch(e => {
