@@ -1,16 +1,18 @@
 'use strict'
 
-const defaultConf = {
-  APP: 'BotFit',
-  PORT: 8080,
-  NODE_ENV: 'dev',
-  USERNAME: 'baboo',
-  PASSWD: 'botfit'
-}
+let fs = require('fs')
+let path = require('path')
+
+let devConfig = {}
+
+let pathToModule = path.join(__dirname, 'dev.config.js')
+if (fs.existsSync(pathToModule)) devConfig = require(pathToModule)
+
+const structConfig = require('./struct.config')
 
 let config = {}
-Object.keys(defaultConf).forEach(key => {
-  config[key] = process.env[key] || defaultConf[key]
+Object.keys(structConfig).forEach(key => {
+  config[key] = process.env[key] || devConfig[key]
 })
 
 module.exports = config

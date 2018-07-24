@@ -1,7 +1,6 @@
 'use strict'
 
 const logger = require('../logger')
-const nt = require('../utils/nativeTypes')
 const actionHandler = require('../actions')
 const Interaction = require('../actions/interaction.class')
 
@@ -25,6 +24,8 @@ const webhook = (req, res) => {
     logger.log('error', 'missing parameters from body request', { request: req.body })
     return res.json({ })
   }
+
+  logger.log('info', { request: req.body })
 
   let options = {
     sessionId: req.body.sessionId,
