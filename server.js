@@ -2,6 +2,10 @@
 
 const config = require('./configs/config')
 const logger = require('./logger')
+const cron = require('./cron')
+
+// Launch cron jobs
+cron.launchJobs()
 
 // Set up of the server
 let path = require('path')

@@ -10,7 +10,7 @@ const multiresa = require('../../utils/multiresa')
   interaction: (object) see Interaction class
     parameters: (object) must contain
       date: (string) day to book the slot
-      time: (string) day to book the slot
+      time: (string) time of the slot
 
   RETURN
     (Promise) RESOLVE with NO PARAMETER / REJECT with an ERROR
