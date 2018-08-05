@@ -6,7 +6,7 @@ const nt = require('../utils/nativeTypes')
 const multiresa = require('../utils/multiresa')
 const fb = require('../utils/fb')
 
-const cronTime = '* 15 0 * * 1,5'
+const cronTime = '* 15 0 * * 0,5'
 
 /**
  * Book session for each tuesday and friday.
